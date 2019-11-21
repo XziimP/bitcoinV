@@ -112,11 +112,13 @@ public:
         // RPC of a node that is up at the time of release. nMinimumChainWork is updated at the same time as assumevalid. 
         // It is calculated by summing the work done in each block which is calculated by doing 2^256/(target+1)
 
-        // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0000000000000000000000000000000000000000000000020b11585a7eba829a");
+        // nMinimumChainWork is a value that is updated at every release. It is retrieved from the Debug command
+        //            getblockchaininfo 
+        consensus.nMinimumChainWork = uint256S("0000000000000000000000000000000000000000000000003c278538413d5475");
+
                                                 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("000000000001e87c9866f23358ec86ce39ef4255a704d05219762f66f335b49e");
+        consensus.defaultAssumeValid = uint256S("000000000000000000000000000000000000000000000000000002e002e002e0");
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -179,12 +181,26 @@ public:
         vSeeds.emplace_back("seed1.bitcoinv.org");
         vSeeds.emplace_back("seed2.bitcoinv.org");
         vSeeds.emplace_back("seed3.bitcoinv.org");
+
+        vSeeds.emplace_back("zpool.ca");
+        vSeeds.emplace_back("blockminer.me");
+        vSeeds.emplace_back("prohashing.com");       
+        vSeeds.emplace_back("aiomine.com");      
+
+        vSeeds.emplace_back("persianmine.com");
+        vSeeds.emplace_back("seedbtcv.altcoincash.xyz");
+        vSeeds.emplace_back("seedbtcv.atomminer.com");
+        
         vSeeds.emplace_back("seed4.bitcoinv.org");
         vSeeds.emplace_back("seed5.bitcoinv.org");
         vSeeds.emplace_back("seed6.bitcoinv.org");
         vSeeds.emplace_back("seed7.bitcoinv.org");
         vSeeds.emplace_back("seed8.bitcoinv.org");
         vSeeds.emplace_back("seed9.bitcoinv.org");
+
+        vSeeds.emplace_back("aod-tech.com");
+        vSeeds.emplace_back("altcoincash.xyz");
+        vSeeds.emplace_back("atomminer.com");
 
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,0);
@@ -203,32 +219,21 @@ public:
 
         checkpointData = {
             {
-                {0,     uint256S("000000004c2738ff52ee6dc039d4fde2f3292fed9afa9d712f895d7094f8d350")},
-                {100,   uint256S("00000000015488a23508da3eec027eaa670122e9532251091c706f00e97374f6")},
-                {200,   uint256S("0000000004768f1061608e1c060ed5cb106cc40e8f83513293059b0432267fef")},
-                {300,   uint256S("0000000000ca1d3601bce417ef0024f29f68b8e81a6affd1368227345ee24a90")},
-                {400,   uint256S("0000000000009205785a036ba12b3a6a5ac5d6c49f1029dde215084db9d1597c")},
-                {500,   uint256S("000000000001e87c9866f23358ec86ce39ef4255a704d05219762f66f335b49e")},
-                {1100,   uint256S("00000000000001dce5294960d90ecea9b754edd50346c4d2341ce323eeab6703")},
-                {1500,   uint256S("0000000000000138bd2e62bcbcd62fbb90834a7b74f2f8436d93c8c96fc5a144")},
-                {1900,   uint256S("00000000000001071393ab3f56bb9a39f5cd49a9ef936a9d844282776a7cb76a")},
-                {2000,   uint256S("00000000000000b899af61991cfeb576fa6d2317deef32356f8ef2bb2afd081b")},
-                {3000,   uint256S("00000000000000e8c1e20d73d89060300835a11b78e954a60e306f6ab89e6209")},
-                {4000,   uint256S("0000000000000066040f12cec6b4bc17fbbc46ce94a492e2c91ba6ce59d0313b")},
-                {5000,   uint256S("00000000000001955e0290c4d9622cd1bfd6a8a9acec8d828669adf20bd443bb")},
-                {6000,   uint256S("000000000000264d30378730f59cd00d5bf0d318776be67425d86a370fccc8d7")},
-                {7300,   uint256S("0000000000000517bba93a18394b72d2353a78ac7d697911e7b8c39e301520ca")},
-				{10000,   uint256S("000000000000083ef66333f6320e82641784dd9795c2bcfaf96cafb5ad8031b9")},
-				{15000,   uint256S("00000000000002d98911e2328f81fedd259d084cb92014d51dcba6cc981fa07b")},
-				{18056,   uint256S("000000000000caf16a19e9f5a860159b45db24669fb3758a5ab6c49524a327de")},
+                {0,      uint256S("000000004c2738ff52ee6dc039d4fde2f3292fed9afa9d712f895d7094f8d350")},
+                {1,      uint256S("000000000013864717b44ff0a19141d25ae2b591b505cc2e5a5232f8269cbe42")},
+                {2  ,    uint256S("0000000000012be7918e2bdd7b4f3e58be1f36b1c760a012848d442ce3b1df2e")},
+                {250,    uint256S("000000000059bba5efe387b9ee0f45e39dc9108058900425f7daa51793e8adf9")},
+                {825,    uint256S("000000000000021ea321c11549997059fbf18de4a62e60243467e850f3f95457")},
+				{1520,   uint256S("0000000000000000023c35ccd870dbb0731b262e1e3ea31f714047337671f67b")},
             }
         };
 
+
         chainTxData = ChainTxData{
             // type     getchaintxstats    in debug console
-            /* nTime    */ 1544800001,
-            /* nTxCount */ 1,
-            /* dTxRate  */ 0.9900000
+            /* nTime    */ 1573870120,
+            /* nTxCount */ 961,
+            /* dTxRate  */ 0.005352219580528859
         };
 
         /* disable fallback fee on mainnet */
