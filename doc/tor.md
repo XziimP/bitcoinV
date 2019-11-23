@@ -45,11 +45,11 @@ config file): *Needed for Tor version 0.2.7.0 and older versions of Tor only. Fo
 versions of Tor see [Section 3](#3-automatically-listen-on-tor).*
 
 	HiddenServiceDir /var/lib/tor/bitcoin-service/
-	HiddenServicePort 8333 127.0.0.1:8333
-	HiddenServicePort 18333 127.0.0.1:18333
+	HiddenServicePort 9333 127.0.0.1:9333
+	HiddenServicePort 19333 127.0.0.1:19333
 
 The directory can be different of course, but (both) port numbers should be equal to
-your bitcoind's P2P listen port (8333 by default).
+your bitcoind's P2P listen port (9333 by default).
 
 	-externalip=X   You can tell bitcoin about its publicly reachable address using
 	                this option, and this can be a .onion address. Given the above
@@ -84,7 +84,7 @@ as well, use `discover` instead:
 
 	./bitcoind ... -discover
 
-and open port 8333 on your firewall (or use -upnp).
+and open port 9333 on your firewall (or use -upnp).
 
 If you only want to use Tor to reach .onion addresses, but not use it as a proxy
 for normal IPv4/IPv6 communication, use:
@@ -114,7 +114,10 @@ preconfigured and the creation of a hidden service is automatic. If permission p
 are seen with `-debug=tor` they can be resolved by adding both the user running Tor and
 the user running bitcoind to the same group and setting permissions appropriately. On
 Debian-based systems the user running bitcoind can be added to the debian-tor group,
-which has the appropriate permissions.
+which has the appropriate permissions. Before starting bitcoind you will need to re-login
+to allow debian-tor group to be applied. Otherwise you will see the following notice: "tor:
+Authentication cookie /run/tor/control.authcookie could not be opened (check permissions)"
+on debug.log.
 
 An alternative authentication method is the use
 of the `-torpassword=password` option. The `password` is the clear text form that
