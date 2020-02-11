@@ -1,15 +1,10 @@
-BitcoinV Core integration/staging tree
+Bitcoin Core integration/staging tree
 =====================================
 
-http://www.bitcoinV.org
+https://bitcoincore.org
 
-What is BitcoinV?
+What is Bitcoin?
 ----------------
-
-BitcoinV aims to be a more decentralized version of Bitcoin. This is accomplished 
-using Satoshi's Missing Link - VBR Decentralization Algorithm. 
-The Variable Block Reward (VBR) feature is the engine behind promoting more 
-decentralization.
 
 Bitcoin is an experimental digital currency that enables instant payments to
 anyone, anywhere in the world. Bitcoin uses peer-to-peer technology to operate
@@ -24,15 +19,15 @@ the Bitcoin Core software, see https://bitcoincore.org/en/download/, or read the
 License
 -------
 
-BitcoinV Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
+Bitcoin Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
 information or see https://opensource.org/licenses/MIT.
 
 Development Process
 -------------------
 
 The `master` branch is regularly built and tested, but is not guaranteed to be
-completely stable. [Tags](https://github.com/bitcoinVBR/bitcoinV/tags) are created
-regularly to indicate new official, stable release versions of BitcoinV Core.
+completely stable. [Tags](https://github.com/bitcoin/bitcoin/tags) are created
+regularly to indicate new official, stable release versions of Bitcoin Core.
 
 The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md)
 and useful hints for developers can be found in [doc/developer-notes.md](doc/developer-notes.md).
@@ -64,6 +59,7 @@ Changes should be tested by somebody other than the developer who wrote the
 code. This is especially important for large or high-risk changes. It is useful
 to add a test plan to the pull request description if testing the changes is
 not straightforward.
+
 Translations
 ------------
 

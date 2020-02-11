@@ -56,9 +56,9 @@ public:
      */
     enum Unit
     {
-        BTCV,
-        mBTCV,
-        uBTCV,
+        BTC,
+        mBTC,
+        uBTC,
         SAT
     };
 

@@ -220,7 +220,6 @@ BITCOIN_CORE_H = \
   util/validation.h \
   validation.h \
   validationinterface.h \
-  variable_block_reward.h \
   versionbits.h \
   versionbitsinfo.h \
   walletinitinterface.h \
@@ -304,7 +303,6 @@ libbitcoin_server_a_SOURCES = \
   ui_interface.cpp \
   validation.cpp \
   validationinterface.cpp \
-  variable_block_reward.cpp \
   versionbits.cpp \
   $(BITCOIN_CORE_H)
 
@@ -451,8 +449,6 @@ libbitcoin_common_a_SOURCES = \
   bech32.cpp \
   bloom.cpp \
   chainparams.cpp \
-  chain.cpp \
-  pow.cpp \  
   coins.cpp \
   compressor.cpp \
   core_read.cpp \
@@ -475,7 +471,6 @@ libbitcoin_common_a_SOURCES = \
   script/sign.cpp \
   script/signingprovider.cpp \
   script/standard.cpp \
-  variable_block_reward.cpp \
   versionbitsinfo.cpp \
   warnings.cpp \
   $(BITCOIN_CORE_H)
@@ -691,13 +686,13 @@ clean-local:
 check-symbols: $(bin_PROGRAMS)
 if GLIBC_BACK_COMPAT
 	@echo "Checking glibc back compat..."
-	$(AM_V_at) READELF=$(READELF) CPPFILT=$(CPPFILT) $(PYTHON) $(top_srcdir)/contrib/devtools/symbol-check.py < $(bin_PROGRAMS)
+	$(AM_V_at) READELF=$(READELF) CPPFILT=$(CPPFILT) $(PYTHON) $(top_srcdir)/contrib/devtools/symbol-check.py $(bin_PROGRAMS)
 endif
 
 check-security: $(bin_PROGRAMS)
 if HARDEN
 	@echo "Checking binary security..."
-	$(AM_V_at) READELF=$(READELF) OBJDUMP=$(OBJDUMP) $(PYTHON) $(top_srcdir)/contrib/devtools/security-check.py < $(bin_PROGRAMS)
+	$(AM_V_at) READELF=$(READELF) OBJDUMP=$(OBJDUMP) $(PYTHON) $(top_srcdir)/contrib/devtools/security-check.py $(bin_PROGRAMS)
 endif
 
 if ENABLE_BIP70
