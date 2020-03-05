@@ -1,310 +1,158 @@
-UNIX BUILD NOTES
+WINDOWS BUILD NOTES
 ====================
-Some notes on how to build Bitcoin Core in Unix.
 
-(For BSD specific instructions, see `build-*bsd.md` in this directory.)
+Below are some notes on how to build Bitcoin Core for Windows.
 
-Note
----------------------
-Always use absolute paths to configure and compile Bitcoin Core and the dependencies.
-For example, when specifying the path of the dependency:
+The options known to work for building Bitcoin Core on Windows are:
 
-	../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BDB_PREFIX
+* On Linux, using the [Mingw-w64](https://mingw-w64.org/doku.php) cross compiler tool chain. Ubuntu Bionic 18.04 is required
+and is the platform used to build the Bitcoin Core Windows release binaries.
+* On Windows, using [Windows
+Subsystem for Linux (WSL)](https://msdn.microsoft.com/commandline/wsl/about) and the Mingw-w64 cross compiler tool chain.
 
-Here BDB_PREFIX must be an absolute path - it is defined using $(pwd) which ensures
-the usage of the absolute path.
+Other options which may work, but which have not been extensively tested are (please contribute instructions):
 
-To Build
----------------------
+* On Windows, using a POSIX compatibility layer application such as [cygwin](http://www.cygwin.com/) or [msys2](http://www.msys2.org/).
+* On Windows, using a native compiler tool chain such as [Visual Studio](https://www.visualstudio.com).
 
-```bash
-./autogen.sh
-./configure
-make
-make install # optional
-```
+Installing Windows Subsystem for Linux
+---------------------------------------
 
-This will build bitcoin-qt as well, if the dependencies are met.
+With Windows 10, Microsoft has released a new feature named the [Windows
+Subsystem for Linux (WSL)](https://msdn.microsoft.com/commandline/wsl/about). This
+feature allows you to run a bash shell directly on Windows in an Ubuntu-based
+environment. Within this environment you can cross compile for Windows without
+the need for a separate Linux VM or server. Note that while WSL can be installed with
+other Linux variants, such as OpenSUSE, the following instructions have only been
+tested with Ubuntu.
 
-Dependencies
----------------------
+This feature is not supported in versions of Windows prior to Windows 10 or on
+Windows Server SKUs. In addition, it is available [only for 64-bit versions of
+Windows](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide).
 
-These dependencies are required:
+Full instructions to install WSL are available on the above link.
+To install WSL on Windows 10 with Fall Creators Update installed (version >= 16215.0) do the following:
 
- Library     | Purpose          | Description
- ------------|------------------|----------------------
- libssl      | Crypto           | Random Number Generation, Elliptic Curve Cryptography
- libboost    | Utility          | Library for threading, data structures, etc
- libevent    | Networking       | OS independent asynchronous networking
+1. Enable the Windows Subsystem for Linux feature
+  * Open the Windows Features dialog (`OptionalFeatures.exe`)
+  * Enable 'Windows Subsystem for Linux'
+  * Click 'OK' and restart if necessary
+2. Install Ubuntu
+  * Open Microsoft Store and search for "Ubuntu 18.04" or use [this link](https://www.microsoft.com/store/productId/9N9TNGVNDL3Q)
+  * Click Install
+3. Complete Installation
+  * Open a cmd prompt and type "Ubuntu1804"
+  * Create a new UNIX user account (this is a separate account from your Windows account)
 
-Optional dependencies:
+After the bash shell is active, you can follow the instructions below, starting
+with the "Cross-compilation" section. Compiling the 64-bit version is
+recommended, but it is possible to compile the 32-bit version.
 
- Library     | Purpose          | Description
- ------------|------------------|----------------------
- miniupnpc   | UPnP Support     | Firewall-jumping support
- libdb4.8    | Berkeley DB      | Wallet storage (only needed when wallet enabled)
- qt          | GUI              | GUI toolkit (only needed when GUI enabled)
- protobuf    | Payments in GUI  | Data interchange format used for payment protocol (only needed when BIP70 enabled)
- libqrencode | QR codes in GUI  | Optional for generating QR codes (only needed when GUI enabled)
- univalue    | Utility          | JSON parsing and encoding (bundled version will be used unless --with-system-univalue passed to configure)
- libzmq3     | ZMQ notification | Optional, allows generating ZMQ notifications (requires ZMQ version >= 4.0.0)
+Cross-compilation for Ubuntu and Windows Subsystem for Linux
+------------------------------------------------------------
 
-For the versions used, see [dependencies.md](dependencies.md)
-
-Memory Requirements
---------------------
-
-C++ compilers are memory-hungry. It is recommended to have at least 1.5 GB of
-memory available when compiling Bitcoin Core. On systems with less, gcc can be
-tuned to conserve memory with additional CXXFLAGS:
-
-
-    ./configure CXXFLAGS="--param ggc-min-expand=1 --param ggc-min-heapsize=32768"
-
-Alternatively, or in addition, debugging information can be skipped for compilation. The default compile flags are
-`-g -O2`, and can be changed with:
-
-    ./configure CXXFLAGS="-O2"
-
-Finally, clang (often less resource hungry) can be used instead of gcc, which is used by default:
-
-    ./configure CXX=clang++ CC=clang
-
-## Linux Distribution Specific Instructions
-
-### Ubuntu & Debian
-
-#### Dependency Build Instructions
-
-Build requirements:
-
-    sudo apt-get install build-essential libtool autotools-dev automake pkg-config bsdmainutils python3
-
-Now, you can either build from self-compiled [depends](/depends/README.md) or install the required dependencies:
-
-    sudo apt-get install libssl-dev libevent-dev libboost-system-dev libboost-filesystem-dev libboost-chrono-dev libboost-test-dev libboost-thread-dev
-
-BerkeleyDB is required for the wallet.
-
-Ubuntu and Debian have their own `libdb-dev` and `libdb++-dev` packages, but these will install
-BerkeleyDB 5.1 or later. This will break binary wallet compatibility with the distributed executables, which
-are based on BerkeleyDB 4.8. If you do not care about wallet compatibility,
-pass `--with-incompatible-bdb` to configure.
-
-Otherwise, you can build from self-compiled `depends` (see above).
-
-To build Bitcoin Core without wallet, see [*Disable-wallet mode*](/doc/build-unix.md#disable-wallet-mode)
-
-
-Optional (see `--with-miniupnpc` and `--enable-upnp-default`):
-
-    sudo apt-get install libminiupnpc-dev
-
-ZMQ dependencies (provides ZMQ API):
-
-    sudo apt-get install libzmq3-dev
-
-GUI dependencies:
-
-If you want to build bitcoin-qt, make sure that the required packages for Qt development
-are installed. Qt 5 is necessary to build the GUI.
-To build without GUI pass `--without-gui`.
-
-To build with Qt 5 you need the following:
-
-    sudo apt-get install libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools
-
-libqrencode (optional) can be installed with:
-
-    sudo apt-get install libqrencode-dev
-
-protobuf (optional) can be installed with:
-
-    sudo apt-get install libprotobuf-dev protobuf-compiler
-
-Once these are installed, they will be found by configure and a bitcoin-qt executable will be
-built by default.
-
-
-### Fedora
-
-#### Dependency Build Instructions
-
-Build requirements:
-
-    sudo dnf install gcc-c++ libtool make autoconf automake openssl-devel libevent-devel boost-devel libdb4-devel libdb4-cxx-devel python3
-
-Optional (see `--with-miniupnpc` and `--enable-upnp-default`):
-
-    sudo dnf install miniupnpc-devel
-
-ZMQ dependencies (provides ZMQ API):
-
-    sudo dnf install zeromq-devel
-
-To build with Qt 5 you need the following:
-
-    sudo dnf install qt5-qttools-devel qt5-qtbase-devel
-
-libqrencode (optional) can be installed with:
-
-    sudo dnf install qrencode-devel
-
-protobuf (optional) can be installed with:
-
-    sudo dnf install protobuf-devel
-
-Notes
------
-The release is built with GCC and then "strip bitcoind" to strip the debug
-symbols, which reduces the executable size by about 90%.
-
-
-miniupnpc
----------
-
-[miniupnpc](http://miniupnp.free.fr/) may be used for UPnP port mapping.  It can be downloaded from [here](
-http://miniupnp.tuxfamily.org/files/).  UPnP support is compiled in and
-turned off by default.  See the configure options for upnp behavior desired:
-
-	--without-miniupnpc      No UPnP support miniupnp not required
-	--disable-upnp-default   (the default) UPnP support turned off by default at runtime
-	--enable-upnp-default    UPnP support turned on by default at runtime
-
-
-Berkeley DB
------------
-It is recommended to use Berkeley DB 4.8. If you have to build it yourself,
-you can use [the installation script included in contrib/](/contrib/install_db4.sh)
-like so:
-
-```shell
-./contrib/install_db4.sh `pwd`
-```
-
-from the root of the repository.
-
-**Note**: You only need Berkeley DB if the wallet is enabled (see [*Disable-wallet mode*](/doc/build-unix.md#disable-wallet-mode)).
-
-Boost
------
-If you need to build Boost yourself:
-
-	sudo su
-	./bootstrap.sh
-	./bjam install
-
-
-Security
---------
-To help make your Bitcoin Core installation more secure by making certain attacks impossible to
-exploit even if a vulnerability is found, binaries are hardened by default.
-This can be disabled with:
-
-Hardening Flags:
-
-	./configure --enable-hardening
-	./configure --disable-hardening
-
-
-Hardening enables the following features:
-* _Position Independent Executable_: Build position independent code to take advantage of Address Space Layout Randomization
-    offered by some kernels. Attackers who can cause execution of code at an arbitrary memory
-    location are thwarted if they don't know where anything useful is located.
-    The stack and heap are randomly located by default, but this allows the code section to be
-    randomly located as well.
-
-    On an AMD64 processor where a library was not compiled with -fPIC, this will cause an error
-    such as: "relocation R_X86_64_32 against `......' can not be used when making a shared object;"
-
-    To test that you have built PIE executable, install scanelf, part of paxutils, and use:
-
-    	scanelf -e ./bitcoin
-
-    The output should contain:
-
-     TYPE
-    ET_DYN
-
-* _Non-executable Stack_: If the stack is executable then trivial stack-based buffer overflow exploits are possible if
-    vulnerable buffers are found. By default, Bitcoin Core should be built with a non-executable stack,
-    but if one of the libraries it uses asks for an executable stack or someone makes a mistake
-    and uses a compiler extension which requires an executable stack, it will silently build an
-    executable without the non-executable stack protection.
-
-    To verify that the stack is non-executable after compiling use:
-    `scanelf -e ./bitcoin`
-
-    The output should contain:
-	STK/REL/PTL
-	RW- R-- RW-
-
-    The STK RW- means that the stack is readable and writeable but not executable.
-
-Disable-wallet mode
---------------------
-When the intention is to run only a P2P node without a wallet, Bitcoin Core may be compiled in
-disable-wallet mode with:
-
-    ./configure --disable-wallet
-
-In this case there is no dependency on Berkeley DB 4.8.
-
-Mining is also possible in disable-wallet mode using the `getblocktemplate` RPC call.
-
-Additional Configure Flags
---------------------------
-A list of additional configure flags can be displayed with:
-
-    ./configure --help
-
-
-Setup and Build Example: Arch Linux
------------------------------------
-This example lists the steps necessary to setup and build a command line only, non-wallet distribution of the latest changes on Arch Linux:
-
-    pacman -S git base-devel boost libevent python
-    git clone https://github.com/bitcoin/bitcoin.git
-    cd bitcoin/
-    ./autogen.sh
-    ./configure --disable-wallet --without-gui --without-miniupnpc
-    make check
-
-Note:
-Enabling wallet support requires either compiling against a Berkeley DB newer than 4.8 (package `db`) using `--with-incompatible-bdb`,
-or building and depending on a local version of Berkeley DB 4.8. The readily available Arch Linux packages are currently built using
-`--with-incompatible-bdb` according to the [PKGBUILD](https://projects.archlinux.org/svntogit/community.git/tree/bitcoin/trunk/PKGBUILD).
-As mentioned above, when maintaining portability of the wallet between the standard Bitcoin Core distributions and independently built
-node software is desired, Berkeley DB 4.8 must be used.
-
-
-ARM Cross-compilation
--------------------
-These steps can be performed on, for example, an Ubuntu VM. The depends system
+The steps below can be performed on Ubuntu (including in a VM) or WSL. The depends system
 will also work on other Linux distributions, however the commands for
 installing the toolchain will be different.
 
-Make sure you install the build requirements mentioned above.
-Then, install the toolchain and curl:
+First, install the general dependencies:
 
-    sudo apt-get install g++-arm-linux-gnueabihf curl
+    sudo apt update
+    sudo apt upgrade
+    sudo apt install build-essential libtool autotools-dev automake pkg-config bsdmainutils curl git
 
-To build executables for ARM:
+A host toolchain (`build-essential`) is necessary because some dependency
+packages (such as `protobuf`) need to build host utilities that are used in the
+build process.
 
+See [dependencies.md](dependencies.md) for a complete overview.
+
+If you want to build the windows installer with `make deploy` you need [NSIS](https://nsis.sourceforge.io/Main_Page):
+
+    sudo apt install nsis
+
+Acquire the source in the usual way:
+
+    git clone https://github.com/bitcoin/bitcoin.git
+    cd bitcoin
+
+## Building for 64-bit Windows
+
+The first step is to install the mingw-w64 cross-compilation tool chain:
+
+    sudo apt install g++-mingw-w64-x86-64
+
+Ubuntu Bionic 18.04 <sup>[1](#footnote1)</sup>:
+
+    sudo update-alternatives --config x86_64-w64-mingw32-g++ # Set the default mingw32 g++ compiler option to posix.
+
+Once the toolchain is installed the build steps are common:
+
+Note that for WSL the Bitcoin Core source path MUST be somewhere in the default mount file system, for
+example /usr/src/bitcoin, AND not under /mnt/d/. If this is not the case the dependency autoconf scripts will fail.
+This means you cannot use a directory that is located directly on the host Windows file system to perform the build.
+
+Build using:
+
+    PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') # strip out problematic Windows %PATH% imported var
     cd depends
-    make HOST=arm-linux-gnueabihf NO_QT=1
+    make -j8 HOST=x86_64-w64-mingw32
     cd ..
-    ./autogen.sh
-    ./configure --prefix=$PWD/depends/arm-linux-gnueabihf --enable-glibc-back-compat --enable-reduce-exports LDFLAGS=-static-libstdc++
-    make
+    ./autogen.sh # not required when building from tarball
+    CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/
+    make -j8
 
-Portable Linux build
--------------------
-cd depends
-make
-cd ..
-./autogen.sh
-./configure --enable-glibc-back-compat --prefix=`pwd`/depends/x86_64-pc-linux-gnu LDFLAGS="-static-libstdc++"
-make
+## Building for 32-bit Windows
+
+The first step is to install the mingw-w64 cross-compilation tool chain:
+
+    sudo apt install g++-mingw-w64-i686 mingw-w64-i686-dev
+
+Ubuntu Bionic 18.04 <sup>[1](#footnote1)</sup>:
+
+    sudo update-alternatives --config i686-w64-mingw32-g++ # Set the default mingw32 g++ compiler option to posix.
+
+Once the toolchain is installed the build steps are common:
+
+Note that for WSL the Bitcoin Core source path MUST be somewhere in the default mount file system, for
+example /usr/src/bitcoin, AND not under /mnt/d/. If this is not the case the dependency autoconf scripts will fail.
+This means you cannot use a directory that is located directly on the host Windows file system to perform the build.
+
+Build using:
+
+    PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') # strip out problematic Windows %PATH% imported var
+    cd depends
+    make -j8 HOST=i686-w64-mingw32
+    cd ..
+    ./autogen.sh # not required when building from tarball
+    CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/
+    make -j8
+
+## Depends system
 
 For further documentation on the depends system see [README.md](../depends/README.md) in the depends directory.
+
+Installation
+-------------
+
+After building using the Windows subsystem it can be useful to copy the compiled
+executables to a directory on the Windows drive in the same directory structure
+as they appear in the release `.zip` archive. This can be done in the following
+way. This will install to `c:\workspace\bitcoin`, for example:
+
+    make install DESTDIR=/mnt/c/workspace/bitcoin
+
+You can also create an installer using:
+
+    make deploy
+
+Footnotes
+---------
+
+<a name="footnote1">1</a>: Starting from Ubuntu Xenial 16.04, both the 32 and 64 bit Mingw-w64 packages install two different
+compiler options to allow a choice between either posix or win32 threads. The default option is win32 threads which is the more
+efficient since it will result in binary code that links directly with the Windows kernel32.lib. Unfortunately, the headers
+required to support win32 threads conflict with some of the classes in the C++11 standard library, in particular std::mutex.
+It's not possible to build the Bitcoin Core code using the win32 version of the Mingw-w64 cross compilers (at least not without
+modifying headers in the Bitcoin Core source code).
+

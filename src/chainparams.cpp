@@ -95,7 +95,7 @@ public:
 
         // nMinimumChainWork is a value that is updated at every release. It is retrieved from the Debug command
         //            getblockchaininfo 
-        consensus.nMinimumChainWork = uint256S("0000000000000000000000000000000000000000000000003c278538413d5475");
+        consensus.nMinimumChainWork = uint256S("0000000000000000000000000000000000000000000001b133e158579120d666");
 
                                                 
         // By default assume that the signatures in ancestors of this block are valid.
@@ -205,15 +205,16 @@ public:
                 {2  ,   uint256S("0000000000012be7918e2bdd7b4f3e58be1f36b1c760a012848d442ce3b1df2e")},
                 {250,   uint256S("000000000059bba5efe387b9ee0f45e39dc9108058900425f7daa51793e8adf9")},
                 {825,   uint256S("000000000000021ea321c11549997059fbf18de4a62e60243467e850f3f95457")},
-                
+                {3000,   uint256S("0000000000000001e362aa95e67e739ccdd2023f5c4658775c0537028f2667a4")},
+                {4916,   uint256S("0000000000000000e59d2ba4391e8cd01601e7a787f2f4fc488306d86645c120")}
             }
         };
 
         chainTxData = ChainTxData{
             // type     getchaintxstats    in debug console
-            /* nTime    */ 1573870120,
-            /* nTxCount */ 961,
-            /* dTxRate  */ 0.005352219580528859
+            /* nTime    */ 1583332082,
+            /* nTxCount */ 10497,
+            /* dTxRate  */ 0.001056972823845204
         };
 
     }
