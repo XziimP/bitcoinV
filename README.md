@@ -1,3 +1,14 @@
+### BitcoinV Wallet
+
+![image](https://cdn.discordapp.com/attachments/636533302748119053/710344010862166016/bitcoinv.png)
+
+
+
+
+
+
+
+
 BitcoinV Core integration/staging tree
 =====================================
 
